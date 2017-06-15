@@ -1,6 +1,8 @@
 *.swp
 *.o
 *.a
+*.dot
+*.png
 *.tu
 *.class
 *.original
