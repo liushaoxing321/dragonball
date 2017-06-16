@@ -1,10 +1,19 @@
 CC		= gcc
-CFLAGS	= -Wall -fPIC -fdump-tree-original-raw #-fdump-tree-all
+CFLAGS	= -Wall -fPIC
+ifeq ($(CC),clang)
+	CFLAGS += -Xclang -ast-view
+else
+	CFLAGS += -fdump-tree-original-raw #-fdump-tree-all
+endif
 CPATH	=
 LIBPATH	=
-LIBPATH += -L.
-LDLIBS	=
-LDLIBS  += -lfoo-$(CC)
+LDLIBS  =
+ifeq ($(CC),clang)
+	LDLIBS += libfoo-$(CC).a
+else
+	LIBPATH += -L.
+	LDLIBS += -lfoo-$(CC)
+endif
 PRE	    = hello
 
 all: libfoo hello
