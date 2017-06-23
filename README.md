@@ -10,6 +10,5 @@ compiler backend.
 libclangStaticAnalyzer is reusable through AST gate.
 
 So DragonBall is GCC Frontend -> GCC AST -> Clang AST -> Clang Analyzer Checker 
-to static analysis qtbase, glibc, linux kernel and other [only for GCC](https://bugs.llvm.org/show_bug.cgi?id=22830).
-
+to static analysis Linux kernel and other [only for GCC](https://bugs.llvm.org/show_bug.cgi?id=22830) open source projects.
 
