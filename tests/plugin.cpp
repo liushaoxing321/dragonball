@@ -8,8 +8,10 @@
 #include "tree-pass.h"
 #include "intl.h"
 #include "diagnostic.h"
+#if (GCC_MAJOR > 4)
 #include "context.h"
 #include "varasm.h"
+#endif
 
 int plugin_is_GPL_compatible;
 
@@ -71,7 +73,7 @@ static void llvm_finish_unit(void *gcc_data, void *user_data) {
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 }
 
-static void llvm_finish(void */*gcc_data*/, void */*user_data*/) {
+static void llvm_finish(void *gcc_data, void *user_data) {
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 }
 
