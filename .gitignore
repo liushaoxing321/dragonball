@@ -1,6 +1,7 @@
 *.swp
 *.o
 *.a
+*.so
 *.dot
 *.png
 *.tu
@@ -26,5 +27,6 @@
 *.cplxlower0
 *.optimized
 *.statistics
+tests/1.c
 tests/gcc-hello
-
+tests/cc-hello

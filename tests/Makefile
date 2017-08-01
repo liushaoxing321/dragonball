@@ -1,5 +1,16 @@
-CC		= gcc
-CFLAGS	= -Wall -fPIC
+GCC		?= $(CC)
+GCC_PLUGIN_DIR=$(shell $(GCC) -print-file-name=plugin)
+GCC_VERSION_STRING=$(shell $(GCC) -dumpversion).0
+GCC_MAJOR=$(word 1, $(subst ., ,$(GCC_VERSION_STRING)))
+GCC_MINOR=$(word 2, $(subst ., ,$(GCC_VERSION_STRING)))
+GCC_MICRO=$(word 3, $(subst ., ,$(GCC_VERSION_STRING)))
+TARGET_TRIPLE=$(shell $(GCC) -dumpmachine)
+
+CFLAGS	= -Wall -Wextra -fno-rtti -fPIC \
+          -DTARGET_TRIPLE=\"$(TARGET_TRIPLE)\" \
+	      -DGCC_MAJOR=$(GCC_MAJOR) -DGCC_MINOR=$(GCC_MINOR) \
+	      -DGCC_MICRO=$(GCC_MICRO) \
+	      -isystem$(GCC_PLUGIN_DIR)/include
 ifeq ($(CC),clang)
 	CFLAGS += -Xclang -ast-view
 else
@@ -16,12 +27,16 @@ else
 endif
 PRE	    = hello
 
-all: libfoo hello
+all: libfoo hello plugin
 
 libfoo:
 	$(CC) -o $(CC)-foo.o -c $(CFLAGS) $(CPATH) foo.c
 	ar rc libfoo-$(CC).a $(CC)-foo.o
 	ranlib libfoo-$(CC).a
+	
+plugin:
+	$(CC) -o plugin.o -c $(CFLAGS) $(CPATH) plugin.cpp
+	$(CC) -o plugin.so plugin.o -shared
 
 hello:
 	$(CC) -o $(CC)-hello.o -c $(CFLAGS) $(CPATH) hello.c

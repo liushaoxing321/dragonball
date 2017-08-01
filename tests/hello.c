@@ -4,8 +4,10 @@
 
 int main(int argc, char *argv[]) 
 {
-    printf("Hello World\n");
-    if (foo())
-        printf("bar\n");
+    char *s = "Leslie";
+    int n;
+    printf("%s: Hello World\n", s);
+    if (n = foo())
+        printf("%d\n", n);
     return 0;
 }
