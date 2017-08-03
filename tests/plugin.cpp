@@ -56,7 +56,7 @@ public:
 
   unsigned int execute(function *) { return rtl_emit_function(); }
 
-  opt_pass *clone() { return new pass_rtl_emit_function(m_ctxt); }
+  opt_pass *clone() { return this;/*new pass_rtl_emit_function(m_ctxt);*/ }
 };
 #endif
 
