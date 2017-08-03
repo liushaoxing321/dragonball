@@ -8,9 +8,9 @@ compiler backend.
 [Clang Tidy](http://clang.llvm.org/extra/clang-tidy/) is a proof that 
 libclangStaticAnalyzer is reusable through AST gate.
 
-So DragonBall is GCC Frontend -> GCC GIMPLE -> Clang AST -> Clang Analyzer Checker 
-to static analysis Linux kernel and other [only for GCC](https://bugs.llvm.org/show_bug.cgi?id=22830) open source projects.
+So DragonBall is GCC Frontend -> GCC GIMPLE -> Clang AST -> Clang Analyzer
+ Checker to static analysis Linux kernel and other [only for GCC](https://bugs.llvm.org/show_bug.cgi?id=22830) open source projects.
 
 DragonBall is based on dragonegg, so it needs to open source the related part,
-but I will close source GCC GIMPLE -> Clang AST and proprietary Checker.
-
+ for example: GCC GIMPLE -> Clang AST, but sorry that I will close source for
+ some proprietary Checker.
