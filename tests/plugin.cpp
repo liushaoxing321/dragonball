@@ -52,11 +52,28 @@ const pass_data pass_data_rtl_emit_function = {
 class pass_rtl_emit_function : public rtl_opt_pass {
 public:
   pass_rtl_emit_function(gcc::context *ctxt)
-      : rtl_opt_pass(pass_data_rtl_emit_function, ctxt) {}
+      : rtl_opt_pass(pass_data_rtl_emit_function, ctxt) {
+    printf("DEBUG: %s, line %d: %s: %s: static_pass_number %d\n",
+            __FILE__, __LINE__, __PRETTY_FUNCTION__, flag_check_pointer_bounds
+            ? "flag_check_pointer_bounds" : "!flag_check_pointer_bounds",
+            static_pass_number);
+    flag_check_pointer_bounds = true;
+  }
 
-  unsigned int execute(function *) { return rtl_emit_function(); }
+  opt_pass *clone() final override {
+    printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+    return this;/*new pass_rtl_emit_function(m_ctxt);*/
+  }
 
-  opt_pass *clone() { return this;/*new pass_rtl_emit_function(m_ctxt);*/ }
+  bool gate (function *) final override {
+    printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+    return true;
+  }
+
+  unsigned int execute(function *) final override {
+    printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+    return rtl_emit_function();
+  }
 };
 #endif
 
@@ -65,7 +82,9 @@ static void llvm_start_unit(void *gcc_data, void *user_data) {
 }
 
 static unsigned int rtl_emit_function() {
-  printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
+  printf("DEBUG: %s, line %d: %s: %s\n", __FILE__, __LINE__, __func__,
+          flag_check_pointer_bounds ? "flag_check_pointer_bounds"
+          : "!flag_check_pointer_bounds");
   return 0;
 }
 

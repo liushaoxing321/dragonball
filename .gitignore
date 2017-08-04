@@ -27,6 +27,4 @@
 *.cplxlower0
 *.optimized
 *.statistics
-tests/1.c
-tests/gcc-hello
-tests/cc-hello
+tests/*hello

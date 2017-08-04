@@ -20,27 +20,30 @@ CPATH	=
 LIBPATH	=
 LDLIBS  =
 ifeq ($(CC),clang)
-	LDLIBS += libfoo-$(CC).a
+	LDLIBS += libfoo.a
 else
 	LIBPATH += -L.
-	LDLIBS += -lfoo-$(CC)
+	LDLIBS += -lfoo
 endif
 PRE	    = hello
 
 all: libfoo hello plugin
 
 libfoo:
-	$(CC) -o $(CC)-foo.o -c $(CFLAGS) $(CPATH) foo.c
-	ar rc libfoo-$(CC).a $(CC)-foo.o
-	ranlib libfoo-$(CC).a
+	$(CC) -o foo.o -c $(CFLAGS) $(CPATH) foo.c
+	ar rc libfoo.a foo.o
+	ranlib libfoo.a
 	
 plugin:
 	$(CC) -o plugin.o -c $(CFLAGS) $(CPATH) plugin.cpp
 	$(CC) -o plugin.so plugin.o -shared
 
+debug-plugin:
+	$(CC) -mmpx -fplugin=./plugin.so bare.c -wrapper gdb,--args
+
 hello:
-	$(CC) -o $(CC)-hello.o -c $(CFLAGS) $(CPATH) hello.c
-	$(CC) -o $(CC)-hello $(CC)-hello.o $(LIBPATH) $(LDLIBS)
+	$(CC) -o hello.o -c $(CFLAGS) $(CPATH) hello.c
+	$(CC) -o hello hello.o $(LIBPATH) $(LDLIBS)
 
 # http://digitocero.com/en/blog/exporting-and-visualizing-gccs-abstract-syntax-tree-ast
 treeviz:
