@@ -105,6 +105,10 @@ int plugin_init(struct plugin_name_args *plugin_info,
   int argc = plugin_info->argc;
   struct plugin_argument *argv = plugin_info->argv;
 
+  // FIXME: why pass_rtl_emit_function's execute not be called when flag_lto or
+  // -flto?
+  flag_lto = "";
+
   register_callback(plugin_name, PLUGIN_START_UNIT, llvm_start_unit, NULL);
 
   pass_info.pass =
