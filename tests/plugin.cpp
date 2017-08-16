@@ -1,5 +1,4 @@
 #include "auto-host.h"
-#include <cstring>
 #include "config.h"
 #include "system.h"
 #include "gcc-plugin.h"
@@ -10,7 +9,6 @@
 #include "diagnostic.h"
 #if (GCC_MAJOR > 4)
 #include "context.h"
-#include "varasm.h"
 #endif
 
 int plugin_is_GPL_compatible;
