@@ -2,6 +2,9 @@
 
 #define SKEY "6xxzcQMhb4WgKX0EUkwG747K"
 
+void fake(int fd) {
+}
+
 int login(const char *Name, const char *Pwd) {
   printf("DEBUG: %s, line %d\n", __FILE__, __LINE__);
   if (!Name || !Pwd)

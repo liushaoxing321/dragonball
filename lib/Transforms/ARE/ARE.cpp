@@ -37,6 +37,9 @@ namespace {
     ARE() : FunctionPass(ID) {}
 
     bool runOnFunction(Function &F) override {
+      // Early return if SymbolTableList<Instruction> is empty
+      if (F.empty())
+        return false;
       StringRef FuncName = F.getName();
 #ifdef DRAGONBALL_DEBUG
       errs() << "Function: " << FuncName << "\n";
