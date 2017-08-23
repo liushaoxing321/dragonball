@@ -38,8 +38,9 @@ namespace {
     AREFunctionPass() : FunctionPass(ID) {}
 
     bool runOnFunction(Function &F) override {
-      // Early return if SymbolTableList<Instruction> is empty
-      if (F.empty())
+      // Early return if GlobalValue's NumOperands is zero or
+      // SymbolTableList<Instruction> is empty
+      if (F.isDeclaration())
         return false;
       StringRef FuncName = F.getName();
 #ifdef DRAGONBALL_DEBUG
@@ -85,6 +86,17 @@ namespace {
     ARECFGPass() : CallGraphSCCPass(ID) {}
 
     bool runOnSCC(CallGraphSCC &SCC) override {
+      for (auto &I : SCC) {
+        Function *F = I->getFunction();
+        // Early continue.
+        if (!F || F->isDeclaration())
+          continue;
+        // TODO: Insert redundant data flow.
+        // but keep slim and be aware of performance issue.
+#ifdef DRAGONBALL_DEBUG
+        errs() << "Function: " << F->getName() << "\n";
+#endif
+      }
       return false; // We do not modified the code at first.
     }
   };
