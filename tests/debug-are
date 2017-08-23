@@ -8,7 +8,7 @@ rm a.out *.bc *.ll
 /opt/llvm-svn/bin/clang -emit-llvm test-are.c -c -o test-are.bc
 /opt/llvm-svn/bin/lli test-are.bc
 
-/opt/llvm-svn/bin/opt -load /opt/llvm-svn/lib64/DragonBallARE.so -dragonball-are < test-are.bc > test-are-mod.bc
+/opt/llvm-svn/bin/opt -load /opt/llvm-svn/lib64/DragonBallARE.so -dragonball-are-func < test-are.bc > test-are-mod.bc
 /opt/llvm-svn/bin/lli test-are-mod.bc
 /opt/llvm-svn/bin/llvm-dis test-are-mod.bc -o test-are-mod.ll
 /opt/llvm-svn/bin/llc test-are-mod.ll -o test-are-mod.s

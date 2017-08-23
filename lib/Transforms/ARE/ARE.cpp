@@ -22,6 +22,7 @@
 
 #include "llvm/ADT/Statistic.h"
 #include "llvm/IR/Function.h"
+#include "llvm/Analysis/CallGraphSCCPass.h"
 #include "llvm/Pass.h"
 #include "llvm/Support/raw_ostream.h"
 
@@ -30,11 +31,11 @@ using namespace llvm;
 #define DEBUG_TYPE "dragonball-are"
 
 namespace {
-  // ARE
-  struct ARE : public FunctionPass {
+  // AREFunctionPass
+  struct AREFunctionPass : public FunctionPass {
     static char ID; // Pass identification
     using FuncNameMapTy = StringMap<StringRef>;
-    ARE() : FunctionPass(ID) {}
+    AREFunctionPass() : FunctionPass(ID) {}
 
     bool runOnFunction(Function &F) override {
       // Early return if SymbolTableList<Instruction> is empty
@@ -72,6 +73,23 @@ namespace {
   };
 }
 
-char ARE::ID = 0;
-static RegisterPass<ARE> ARE("dragonball-are",
-                             "an Anti Reverse Engeering Pass");
+char AREFunctionPass::ID = 0;
+static RegisterPass<AREFunctionPass> AREFunctionPassInstance(
+        "dragonball-are-func",
+        "an Anti Reverse Engeering Pass for changing function name");
+
+namespace {
+  // ARECFGPass
+  struct ARECFGPass : public CallGraphSCCPass {
+    static char ID; // Pass identification
+    ARECFGPass() : CallGraphSCCPass(ID) {}
+
+    bool runOnSCC(CallGraphSCC &SCC) override {
+      return false; // We do not modified the code at first.
+    }
+  };
+}
+
+char ARECFGPass::ID = 0;
+static RegisterPass<ARECFGPass> ARECFGPassInstance("dragonball-are-cfg",
+        "an Anti Reverse Engeering Pass for obfuscating control flow graph");
