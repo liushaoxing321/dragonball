@@ -3,6 +3,7 @@
 rm a.out *.bc *.ll
 
 /opt/llvm-svn/bin/clang -emit-llvm -S test-are.c -o test-are.ll
+/opt/llvm-svn/bin/llc test-are.ll -o test-are.s
 
 /opt/llvm-svn/bin/clang -emit-llvm test-are.c -c -o test-are.bc
 /opt/llvm-svn/bin/lli test-are.bc
