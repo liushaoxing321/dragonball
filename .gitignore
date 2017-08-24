@@ -28,6 +28,6 @@
 *.optimized
 *.statistics
 tests/*hello
-tests/*.bc
-tests/*.ll
-tests/*.s
+tests/ARE/*.bc
+tests/ARE/*.ll
+tests/ARE/*.s

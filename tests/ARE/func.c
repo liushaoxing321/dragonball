@@ -1,8 +1,12 @@
 #include <stdio.h>
+#include "jni.h"
 
 #define SKEY "6xxzcQMhb4WgKX0EUkwG747K"
 
-void fake(int fd) {
+JNIEXPORT jstring JNICALL
+Java_com_tencent_mm_network_Java2C_getNetworkServerIp(JNIEnv *env,
+                                                      jclass thiz) {
+  return (*env)->NewStringUTF(env, "140.207.135.104");
 }
 
 int login(const char *Name, const char *Pwd) {

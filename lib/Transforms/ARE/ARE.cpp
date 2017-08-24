@@ -48,18 +48,25 @@ namespace {
 #endif
       if (FuncName != StringRef("main")) {
         // Generate new function name.
-        Twine T(FuncNames.size() + 1);
-        Twine NewFuncName("dragonball" + T.str());
-        // It is able to export FuncNames.
-        FuncNames[FuncName] = StringRef(NewFuncName.str());
+        unsigned Size = FuncNameMap.size();
+        Twine T(Size++);
+        std::string N(DEBUG_TYPE);
+        std::string NewFuncName(N + T.str());
+        // Keep JNI prefix
+        if (FuncName.startswith("Java_")) {
+          NewFuncName = FuncName.substr(0, FuncName.rfind("_") + 1).str() + N +
+              T.str();
+        }
+        // It is able to export FuncNameMap.
+        FuncNameMap[FuncName] = StringRef(NewFuncName);
 #ifdef DRAGONBALL_DEBUG
-        errs() << FuncName << " -> " << NewFuncName.str() << "\n";
+        errs() << FuncName << " -> " << NewFuncName << "\n";
 #endif
-        F.setName(NewFuncName);
+        F.setName(Twine(NewFuncName));
       }
 
-      for (auto& B : F) {
-        for (auto& I : B) {
+      for (auto &B : F) {
+        for (auto &I : B) {
 #ifdef DRAGONBALL_DEBUG
           errs() << "Instruction: " << I.getType() << "\n";
 #endif
@@ -69,8 +76,18 @@ namespace {
       return true; // We modified the code.
     }
 
+    bool doFinalization(Module &M) override {
+#ifdef DRAGONBALL_DEBUG
+      errs() << "DEBUG:" << __PRETTY_FUNCTION__ << " " <<
+          M.getModuleIdentifier() << "\n";
+#endif
+      // TODO: export function name to file
+
+      return false;
+    }
+
   private:
-    FuncNameMapTy FuncNames;
+    FuncNameMapTy FuncNameMap;
   };
 }
 
