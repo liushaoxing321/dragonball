@@ -35,11 +35,11 @@ libfoo:
 	ranlib libfoo.a
 	
 plugin:
-	$(CC) -o plugin.o -c $(CFLAGS) $(CPATH) plugin.cpp
-	$(CC) -o plugin.so plugin.o -shared
+	$(CC) -o GCCPlugin.o -c $(CFLAGS) $(CPATH) GCCPlugin.cpp
+	$(CC) -o GCCPlugin.so GCCPlugin.o -shared
 
 debug-plugin:
-	$(CC) -mmpx -fplugin=./plugin.so bare.c -wrapper gdb,--args
+	$(CC) -fplugin=./GCCPlugin.so bare.c -wrapper gdb,--args
 
 hello:
 	$(CC) -o hello.o -c $(CFLAGS) $(CPATH) hello.c
