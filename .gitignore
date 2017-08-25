@@ -27,6 +27,7 @@
 *.cplxlower0
 *.optimized
 *.statistics
+tests/a.out
 tests/*hello
 tests/ARE/*.bc
 tests/ARE/*.ll

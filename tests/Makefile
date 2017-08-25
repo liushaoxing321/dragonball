@@ -6,7 +6,7 @@ GCC_MINOR=$(word 2, $(subst ., ,$(GCC_VERSION_STRING)))
 GCC_MICRO=$(word 3, $(subst ., ,$(GCC_VERSION_STRING)))
 TARGET_TRIPLE=$(shell $(GCC) -dumpmachine)
 
-CFLAGS	= -Wall -Wextra -fno-rtti -fPIC \
+CFLAGS	= -g -Wall -Wextra -fno-rtti -fPIC \
           -DTARGET_TRIPLE=\"$(TARGET_TRIPLE)\" \
 	      -DGCC_MAJOR=$(GCC_MAJOR) -DGCC_MINOR=$(GCC_MINOR) \
 	      -DGCC_MICRO=$(GCC_MICRO) \
@@ -40,6 +40,9 @@ plugin:
 
 debug-plugin:
 	$(CC) -fplugin=./GCCPlugin.so bare.c -wrapper gdb,--args
+
+debug-plugin-cxx:
+	$(CC) -fplugin=./GCCPlugin.so bare.cpp -wrapper gdb,--args
 
 hello:
 	$(CC) -o hello.o -c $(CFLAGS) $(CPATH) hello.c
