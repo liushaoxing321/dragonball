@@ -240,12 +240,8 @@ ipa_ref_referring_varpool_node(struct ipa_ref *ref) {
   return reinterpret_cast<varpool_node *>(ref->referring);
 }
 
-static symtab_node *cgraph_symbol(cgraph_node *N) {
-  return symtab_node::get(N->orig_decl);
-}
-static symtab_node *varpool_symbol(varpool_node *N) {
-  return symtab_node::get(N->get_constructor());
-}
+static symtab_node *cgraph_symbol(cgraph_node *N) { return N; }
+static symtab_node *varpool_symbol(varpool_node *N) { return N; }
 
 #else
 
