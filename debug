@@ -1,0 +1,34 @@
+#!/bin/bash 
+
+echo "Usage: for example: ./debug /opt/gcc-git/bin/gcc /opt/llvm-svn/bin/llvm-config test/GIMPLE/bare.c"
+
+rm *.s
+
+CC=$1
+if [[ -z "$CC" ]]; then
+    CC=gcc
+    $CC -v
+fi
+
+LC=$2
+if [[ -z "$LC" ]]; then
+    LC=llvm-config
+fi
+$LC --version
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$($LC --libdir)
+
+SRC=$3
+if [[ -z "$SRC" ]]; then
+    SRC=test/GIMPLE/bare.c
+fi
+
+$CC -fplugin=./dragonball.so \
+    -fplugin-arg-dragonball-debug-pass-arguments \
+    -ftime-report \
+    -fverbose-asm \
+    -fplugin-arg-dragonball-enable-gcc-optzns \
+    -fplugin-arg-dragonball-emit-ir \
+    -S \
+    $SRC \
+    -wrapper gdb,--args

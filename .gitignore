@@ -3,6 +3,7 @@
 *.a
 *.d
 *.so
+*.s
 *.dot
 *.png
 *.tu

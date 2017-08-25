@@ -1,5 +1,6 @@
-//===----------- Backend.cpp - High-level LLVM backend interface ----------===//
+//===--------- Middleend.cpp - High-level LLVM middleend interface --------===//
 //
+// Copyright (C) 2017 Leslie Zhai <lesliezhai@llvm.org.cn>
 // Copyright (C) 2005 to 2014  Chris Lattner, Duncan Sands et al.
 //
 // This file is part of DragonEgg.
@@ -17,7 +18,7 @@
 // Foundation, 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA.
 //
 //===----------------------------------------------------------------------===//
-// This file defines the high-level LLVM backend interface.
+// This file defines the high-level LLVM middleend interface.
 //===----------------------------------------------------------------------===//
 
 // Plugin headers
@@ -550,7 +551,7 @@ static void setNoFramePointerElim(bool NoFramePointerElim) {
 static void CreateTargetMachine(const std::string &TargetTriple) {
   // Create the module itself.
   StringRef ModuleID = main_input_filename ? main_input_filename : "";
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s: %s\n", __FILE__, __LINE__, __func__, ModuleID.data());
 #endif
   TheModule = new Module(ModuleID, TheContext);
@@ -688,7 +689,7 @@ static void output_ident(const char *ident_str) {
   Directive += " LLVM: ";
   Directive += LLVM_VERSION_STRING;
   Directive += "\"";
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s: %s\n", __FILE__, __LINE__, __func__, Directive.c_str());
 #endif
   TheModule->setModuleInlineAsm(Directive);
@@ -720,7 +721,7 @@ static void CreateModule(const std::string &TargetTriple) {
   TheModule->setTargetTriple(TargetTriple);
   // https://reviews.llvm.org/D11103
 #if LLVM_VERSION_CODE > LLVM_VERSION(3, 8)
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s: %s\n", __FILE__, __LINE__, __func__,
           TheModule->getDataLayout().getStringRepresentation().c_str());
 #endif
@@ -730,7 +731,7 @@ static void CreateModule(const std::string &TargetTriple) {
                                ->getDataLayout()
                                ->getStringRepresentation());
 #else
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s: %s\n", __FILE__, __LINE__, __func__,
           TheTarget->getDataLayout()->getStringRepresentation().c_str());
 #endif
@@ -792,7 +793,7 @@ static void InitializeBackend(void) {
 
   // Create the target machine to generate code for.
   const std::string TargetTriple = ComputeTargetTriple();
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s: %s\n", __FILE__, __LINE__, __func__, TargetTriple.c_str());
 #endif
   CreateTargetMachine(TargetTriple);
@@ -1205,7 +1206,7 @@ static GlobalValue::LinkageTypes GetLinkageForAlias(tree decl) {
 
 /// emit_alias - Given decl and target emit alias to target.
 static void emit_alias(tree decl, tree target) {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 #endif
   if (errorcount || sorrycount)
@@ -1331,7 +1332,7 @@ static void emit_varpool_aliases(struct varpool_node *node) {
 /// emit_global - Emit the specified VAR_DECL or aggregate CONST_DECL to LLVM as
 /// a global variable.  This function implements the end of assemble_variable.
 static void emit_global(tree decl) {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 #endif
   // FIXME: DECL_PRESERVE_P indicates the var is marked with attribute 'used'.
@@ -1818,7 +1819,7 @@ Value *make_decl_llvm(tree decl) {
 /// make_definition_llvm - Ensures that the body or initial value of the given
 /// GCC global will be output, and returns a declaration for it.
 Value *make_definition_llvm(tree decl) {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 #endif
   // Only need to do something special for global variables.
@@ -1927,7 +1928,7 @@ int plugin_is_GPL_compatible __attribute__((visibility("default")));
 /// NOTE: called even when only doing syntax checking, so do not initialize the
 /// module etc here.
 static void llvm_start_unit(void */*gcc_data*/, void */*user_data*/) {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 #endif
   if (!quiet_flag)
@@ -2009,6 +2010,10 @@ static void emit_cgraph_aliases(struct cgraph_node *node) {
 /// emit_current_function - Turn the current gimple function into LLVM IR.  This
 /// is called once for each function in the compilation unit.
 static void emit_current_function() {
+#ifdef DRAGONBALL_DEBUG
+  printf("DEBUG: %s, %s, line %d: %s\n", __FILE__, __func__, __LINE__,
+          getDescriptiveName(current_function_decl).c_str());
+#endif
   if (!quiet_flag && DECL_NAME(current_function_decl))
     errs() << getDescriptiveName(current_function_decl);
 
@@ -2041,7 +2046,7 @@ static void emit_current_function() {
 /// once for each function in the compilation unit if GCC optimizations are
 /// enabled.
 static unsigned int rtl_emit_function(void) {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 #endif
   if (!errorcount && !sorrycount) {
@@ -2105,7 +2110,7 @@ class pass_rtl_emit_function : public rtl_opt_pass {
 public:
   pass_rtl_emit_function(gcc::context *ctxt)
       : rtl_opt_pass(pass_data_rtl_emit_function, ctxt) {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
     printf("DEBUG: %s, line %d: %s: %s: static_pass_number %d\n",
             __FILE__, __LINE__, __PRETTY_FUNCTION__, flag_check_pointer_bounds
             ? "flag_check_pointer_bounds" : "!flag_check_pointer_bounds",
@@ -2114,21 +2119,21 @@ public:
   }
 
   opt_pass *clone() final override {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
     printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 #endif
     return this;
   }
 
   bool gate(function *) final override {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
     printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 #endif
     return true;
   }
 
   unsigned int execute(function *) final override {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
     printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 #endif
     return rtl_emit_function();
@@ -2138,7 +2143,7 @@ public:
 
 /// emit_file_scope_asms - Output any file-scope assembly.
 static void emit_file_scope_asms() {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 #endif
   for (struct asm_node *anode = asm_nodes; anode; anode = anode->next) {
@@ -2163,7 +2168,7 @@ static tree get_alias_symbol(tree decl) {
 /// emit_cgraph_weakrefs - Output any cgraph weak references to external
 /// declarations.
 static void emit_cgraph_weakrefs() {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 #endif
   struct cgraph_node *node;
@@ -2178,7 +2183,7 @@ static void emit_cgraph_weakrefs() {
 /// emit_varpool_weakrefs - Output any varpool weak references to external
 /// declarations.
 static void emit_varpool_weakrefs() {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 #endif
   struct varpool_node *vnode;
@@ -2203,7 +2208,7 @@ INSTANTIATE_VECTOR(alias_pair);
 /// llvm_emit_globals - Output GCC global variables, aliases and asm's to the
 /// LLVM IR.
 static void llvm_emit_globals(void * /*gcc_data*/, void * /*user_data*/) {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 #endif
   if (errorcount || sorrycount)
@@ -2244,7 +2249,7 @@ static void llvm_emit_globals(void * /*gcc_data*/, void * /*user_data*/) {
              (!DECL_ARTIFICIAL(decl) || vnode->externally_visible))
 #endif
             )) {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
       printf("DEBUG: %s, line %d: %s: vnode\n", __FILE__, __LINE__, __func__);
 #endif
       // TODO: Remove the check on the following lines.  It only exists to avoid
@@ -2296,7 +2301,7 @@ static void InlineAsmDiagnosticHandler(const SMDiagnostic &D, void */*Data*/,
 /// llvm_finish_unit - Finish the .s file.  This is called by GCC once the
 /// compilation unit has been completely processed.
 static void llvm_finish_unit(void */*gcc_data*/, void */*user_data*/) {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 #endif
   if (errorcount || sorrycount)
@@ -2482,7 +2487,7 @@ public:
 /// execute_correct_state - Correct the cgraph state to ensure that newly
 /// inserted functions are processed before being converted to LLVM IR.
 static unsigned int execute_correct_state(void) {
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
 #endif
 #if (GCC_MAJOR > 4)
@@ -2740,7 +2745,7 @@ int __attribute__((visibility("default"))) plugin_init(
   struct register_pass_info pass_info;
 
 #ifndef DISABLE_VERSION_CHECK
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s: %s\n", __FILE__, __LINE__, __func__,
           version->basever);
 #endif
@@ -2855,7 +2860,7 @@ int __attribute__((visibility("default"))) plugin_init(
   // Perform late initialization just before processing the compilation unit.
   register_callback(plugin_name, PLUGIN_START_UNIT, llvm_start_unit, NULL);
 
-#ifdef DRAGONEGG_DEBUG
+#ifdef DRAGONBALL_DEBUG
   printf("DEBUG: %s, line %d: %s: %s\n", __FILE__, __LINE__, __func__,
           EnableGCCOptimizations ? "Enable all gcc optimization passes." :
           "Turn off all gcc optimization passes.");

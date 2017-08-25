@@ -23,7 +23,8 @@ and it also provides LLVM PASS to modify IR for ARE (Anti-Reverse Engeering) pur
 ```
 # dnf upgrade --refresh
 # dnf install gcc-plugin-devel llvm-devel ncurses-devel zlib-devel gcc-c++ redhat-rpm-config
-$ make -j4
+$ make clean
+$ DRAGONBALL_DEBUG=1 make -j4
 ```
 
 ## Debug
@@ -32,11 +33,11 @@ $ make -j4
 
 ```
 $ gcc -fplugin=./dragonball.so \
-    -fplugin-arg-dragonegg-debug-pass-arguments \
+    -fplugin-arg-dragonball-debug-pass-arguments \
     -ftime-report \
     -fverbose-asm \
-    -fplugin-arg-dragonegg-enable-gcc-optzns \
-    -fplugin-arg-dragonegg-emit-ir \
+    -fplugin-arg-dragonball-enable-gcc-optzns \
+    -fplugin-arg-dragonball-emit-ir \
     -S \
     test/GIMPLE/bare.c \
     -wrapper gdb,--args

@@ -97,8 +97,8 @@ ifneq ($(GCC_MINOR), 5)
   endif
 endif
 
-ifdef DRAGONEGG_DEBUG
-CPP_OPTIONS+=-DDRAGONEGG_DEBUG -g
+ifdef DRAGONBALL_DEBUG
+CPP_OPTIONS+=-DDRAGONBALL_DEBUG -g
 endif
 
 LD_OPTIONS+=$(shell $(LLVM_CONFIG) --ldflags) $(LDFLAGS)
