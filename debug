@@ -32,3 +32,8 @@ $CC -fplugin=./dragonball.so \
     -S \
     $SRC \
     -wrapper gdb,--args
+
+clang -emit-llvm -S $SRC
+
+clang -cc1 -ast-dump $SRC
+

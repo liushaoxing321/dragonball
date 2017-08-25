@@ -717,10 +717,6 @@ static void CreateModule(const std::string &TargetTriple) {
   TheModule->setTargetTriple(TargetTriple);
   // https://reviews.llvm.org/D11103
 #if LLVM_VERSION_CODE > LLVM_VERSION(3, 8)
-#ifdef DRAGONBALL_DEBUG
-  printf("DEBUG: %s, line %d: %s: %s\n", __FILE__, __LINE__, __func__,
-          TheModule->getDataLayout().getStringRepresentation().c_str());
-#endif
   TheModule->setDataLayout(TheModule->getDataLayout().getStringRepresentation());
 #elif LLVM_VERSION_CODE > LLVM_VERSION(3, 3)
   TheModule->setDataLayout(TheTarget->getSubtargetImpl()
@@ -1203,7 +1199,8 @@ static GlobalValue::LinkageTypes GetLinkageForAlias(tree decl) {
 /// emit_alias - Given decl and target emit alias to target.
 static void emit_alias(tree decl, tree target) {
 #ifdef DRAGONBALL_DEBUG
-  printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
+  printf("DEBUG: %s, line %d: %s: %s\n", __FILE__, __LINE__, __func__,
+          getDescriptiveName(decl).c_str());
 #endif
   if (errorcount || sorrycount)
     return; // Do not process broken code.
@@ -1328,9 +1325,6 @@ static void emit_varpool_aliases(struct varpool_node *node) {
 /// emit_global - Emit the specified VAR_DECL or aggregate CONST_DECL to LLVM as
 /// a global variable.  This function implements the end of assemble_variable.
 static void emit_global(tree decl) {
-#ifdef DRAGONBALL_DEBUG
-  printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
-#endif
   // FIXME: DECL_PRESERVE_P indicates the var is marked with attribute 'used'.
 
   // Global register variables don't turn into LLVM GlobalVariables.
@@ -1340,6 +1334,12 @@ static void emit_global(tree decl) {
   // If we encounter a forward declaration then do not emit the global yet.
   if (!TYPE_SIZE(TREE_TYPE(decl)))
     return;
+
+#ifdef DRAGONBALL_DEBUG
+  printf("DEBUG: %s, line %d: %s: %s\n", __FILE__, __LINE__, __func__,
+          getDescriptiveName(decl).c_str());
+
+#endif
 
   //TODO  timevar_push(TV_LLVM_GLOBALS);
 
@@ -2042,9 +2042,6 @@ static void emit_current_function() {
 /// once for each function in the compilation unit if GCC optimizations are
 /// enabled.
 static unsigned int rtl_emit_function(void) {
-#ifdef DRAGONBALL_DEBUG
-  printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
-#endif
   if (!errorcount && !sorrycount) {
     InitializeBackend();
     // Convert the function.
@@ -2106,34 +2103,13 @@ class pass_rtl_emit_function : public rtl_opt_pass {
 public:
   pass_rtl_emit_function(gcc::context *ctxt)
       : rtl_opt_pass(pass_data_rtl_emit_function, ctxt) {
-#ifdef DRAGONBALL_DEBUG
-    printf("DEBUG: %s, line %d: %s: %s: static_pass_number %d\n",
-            __FILE__, __LINE__, __PRETTY_FUNCTION__, flag_check_pointer_bounds
-            ? "flag_check_pointer_bounds" : "!flag_check_pointer_bounds",
-            static_pass_number);
-#endif
   }
 
-  opt_pass *clone() final override {
-#ifdef DRAGONBALL_DEBUG
-    printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
-#endif
-    return this;
-  }
+  opt_pass *clone() override { return this; }
 
-  bool gate(function *) final override {
-#ifdef DRAGONBALL_DEBUG
-    printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
-#endif
-    return true;
-  }
+  bool gate(function *) override { return true; }
 
-  unsigned int execute(function *) final override {
-#ifdef DRAGONBALL_DEBUG
-    printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
-#endif
-    return rtl_emit_function();
-  }
+  unsigned int execute(function *) override { return rtl_emit_function(); }
 };
 #endif
 
@@ -2164,9 +2140,6 @@ static tree get_alias_symbol(tree decl) {
 /// emit_cgraph_weakrefs - Output any cgraph weak references to external
 /// declarations.
 static void emit_cgraph_weakrefs() {
-#ifdef DRAGONBALL_DEBUG
-  printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
-#endif
   struct cgraph_node *node;
   FOR_EACH_FUNCTION(node)
     if (node->alias && DECL_EXTERNAL(cgraph_symbol(node)->decl) &&
@@ -2179,9 +2152,6 @@ static void emit_cgraph_weakrefs() {
 /// emit_varpool_weakrefs - Output any varpool weak references to external
 /// declarations.
 static void emit_varpool_weakrefs() {
-#ifdef DRAGONBALL_DEBUG
-  printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
-#endif
   struct varpool_node *vnode;
   FOR_EACH_VARIABLE(vnode)
     if (vnode->alias && DECL_EXTERNAL(varpool_symbol(vnode)->decl) &&
@@ -2204,9 +2174,6 @@ INSTANTIATE_VECTOR(alias_pair);
 /// llvm_emit_globals - Output GCC global variables, aliases and asm's to the
 /// LLVM IR.
 static void llvm_emit_globals(void * /*gcc_data*/, void * /*user_data*/) {
-#ifdef DRAGONBALL_DEBUG
-  printf("DEBUG: %s, line %d: %s\n", __FILE__, __LINE__, __func__);
-#endif
   if (errorcount || sorrycount)
     return; // Do not process broken code.
 
@@ -2231,6 +2198,7 @@ static void llvm_emit_globals(void * /*gcc_data*/, void * /*user_data*/) {
 
     // If this variable must be output even if unused then output it.
     tree decl = varpool_symbol(vnode)->decl;
+    // TODO: put decl into VarDecl for clang AST.
     if (vnode->analyzed &&
         (
 #if GCC_VERSION_CODE > GCC_VERSION(4, 5)
@@ -2245,9 +2213,6 @@ static void llvm_emit_globals(void * /*gcc_data*/, void * /*user_data*/) {
              (!DECL_ARTIFICIAL(decl) || vnode->externally_visible))
 #endif
             )) {
-#ifdef DRAGONBALL_DEBUG
-      printf("DEBUG: %s, line %d: %s: vnode\n", __FILE__, __LINE__, __func__);
-#endif
       // TODO: Remove the check on the following lines.  It only exists to avoid
       // outputting block addresses when not compiling the function containing
       // the block.  We need to support outputting block addresses at odd times

@@ -1,6 +1,8 @@
+#include <stdio.h>
+
 #define PI 3.1415926
 
-static const int num;
+static const int num = 83;
 
 static int foo();
 static int bar(int fd);
@@ -18,5 +20,6 @@ static int bar(int fd) {
 int main(int argc, char *argv[]) {
   int n;
   n = bar(0);
+  printf("%d\n", num);
   return 0;
 }

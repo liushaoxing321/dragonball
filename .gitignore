@@ -4,6 +4,7 @@
 *.d
 *.so
 *.s
+*.ll
 *.dot
 *.png
 *.tu
@@ -30,6 +31,7 @@
 *.optimized
 *.statistics
 TargetInfo
+a.out
 test/GIMPLE/a.out
 test/GIMPLE/*hello
 test/ARE/*.bc
