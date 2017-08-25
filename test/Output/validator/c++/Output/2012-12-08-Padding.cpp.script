@@ -1,0 +1,1 @@
+set -o pipefail;{ cc -fplugin=/data/project/xiangzhai/dragonegg/dragonegg.so -fplugin-arg-dragonegg-emit-ir -S /data/project/xiangzhai/dragonegg/test/validator/c++/2012-12-08-Padding.cpp -o - -std=c++11 | FileCheck /data/project/xiangzhai/dragonegg/test/validator/c++/2012-12-08-Padding.cpp; }

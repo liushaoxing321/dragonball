@@ -1,0 +1,1 @@
+set -o pipefail;{ cc -fplugin=/data/project/xiangzhai/dragonegg/dragonegg.so  -O0 -g -S /data/project/xiangzhai/dragonegg/test/validator/c++/2006-11-20-GlobalSymbols.cpp -fplugin-arg-dragonegg-emit-ir -o - | FileCheck /data/project/xiangzhai/dragonegg/test/validator/c++/2006-11-20-GlobalSymbols.cpp; }

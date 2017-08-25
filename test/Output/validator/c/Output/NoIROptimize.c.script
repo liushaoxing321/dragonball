@@ -1,0 +1,1 @@
+set -o pipefail;{ cc -fplugin=/data/project/xiangzhai/dragonegg/dragonegg.so -fplugin-arg-dragonegg-emit-ir -S -O3 -fplugin-arg-dragonegg-llvm-ir-optimize=0 -fplugin-arg-dragonegg-debug-pass-arguments /data/project/xiangzhai/dragonegg/test/validator/c/NoIROptimize.c 2>&1 | FileCheck /data/project/xiangzhai/dragonegg/test/validator/c/NoIROptimize.c; }

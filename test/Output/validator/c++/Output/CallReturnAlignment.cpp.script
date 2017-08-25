@@ -1,0 +1,1 @@
+set -o pipefail;{ cc -fplugin=/data/project/xiangzhai/dragonegg/dragonegg.so -fplugin-arg-dragonegg-emit-ir /data/project/xiangzhai/dragonegg/test/validator/c++/CallReturnAlignment.cpp -O2 -march=native -fplugin-arg-dragonegg-llvm-ir-optimize=0 -S -o - | FileCheck /data/project/xiangzhai/dragonegg/test/validator/c++/CallReturnAlignment.cpp; }

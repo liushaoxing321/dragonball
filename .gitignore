@@ -1,6 +1,7 @@
 *.swp
 *.o
 *.a
+*.d
 *.so
 *.dot
 *.png
@@ -27,8 +28,9 @@
 *.cplxlower0
 *.optimized
 *.statistics
-tests/a.out
-tests/*hello
-tests/ARE/*.bc
-tests/ARE/*.ll
-tests/ARE/*.s
+TargetInfo
+test/GIMPLE/a.out
+test/GIMPLE/*hello
+test/ARE/*.bc
+test/ARE/*.ll
+test/ARE/*.s

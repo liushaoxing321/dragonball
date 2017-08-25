@@ -1,0 +1,2 @@
+set -o pipefail;{ cc -fplugin=/data/project/xiangzhai/dragonegg/dragonegg.so -fplugin-arg-dragonegg-emit-ir -S /data/project/xiangzhai/dragonegg/test/validator/c/vectorizer.c -o - -O3 -msse | FileCheck -check-prefix=VON /data/project/xiangzhai/dragonegg/test/validator/c/vectorizer.c; } &&
+{ cc -fplugin=/data/project/xiangzhai/dragonegg/dragonegg.so -fplugin-arg-dragonegg-emit-ir -S /data/project/xiangzhai/dragonegg/test/validator/c/vectorizer.c -o - -O3 -msse -fno-tree-vectorize | FileCheck -check-prefix=VOFF /data/project/xiangzhai/dragonegg/test/validator/c/vectorizer.c; }

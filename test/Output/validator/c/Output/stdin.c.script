@@ -1,0 +1,1 @@
+set -o pipefail;{ cc -fplugin=/data/project/xiangzhai/dragonegg/dragonegg.so -fplugin-arg-dragonegg-emit-ir -g -x c -S -o /dev/null - < /data/project/xiangzhai/dragonegg/test/validator/c/stdin.c; }

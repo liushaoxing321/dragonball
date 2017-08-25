@@ -1,0 +1,2 @@
+set -o pipefail;{ cc -fplugin=/data/project/xiangzhai/dragonegg/dragonegg.so  -O1 -S /data/project/xiangzhai/dragonegg/test/validator/c/TargetAttributes.c -o - -msse | FileCheck /data/project/xiangzhai/dragonegg/test/validator/c/TargetAttributes.c --check-prefix=CHECK-SSE; } &&
+{ cc -fplugin=/data/project/xiangzhai/dragonegg/dragonegg.so  -O1 -S /data/project/xiangzhai/dragonegg/test/validator/c/TargetAttributes.c -o - -mno-sse | FileCheck /data/project/xiangzhai/dragonegg/test/validator/c/TargetAttributes.c --check-prefix=CHECK-NOSSE; }

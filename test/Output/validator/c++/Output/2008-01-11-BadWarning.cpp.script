@@ -1,0 +1,1 @@
+set -o pipefail;{ cc -fplugin=/data/project/xiangzhai/dragonegg/dragonegg.so -fplugin-arg-dragonegg-emit-ir -xc++ /data/project/xiangzhai/dragonegg/test/validator/c++/2008-01-11-BadWarning.cpp -S -o /dev/null 2>&1 | not grep warning; }

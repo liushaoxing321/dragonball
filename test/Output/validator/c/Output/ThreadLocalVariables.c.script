@@ -1,0 +1,1 @@
+set -o pipefail;{ cc -fplugin=/data/project/xiangzhai/dragonegg/dragonegg.so -fplugin-arg-dragonegg-emit-ir -fpic -O -S /data/project/xiangzhai/dragonegg/test/validator/c/ThreadLocalVariables.c -o - | FileCheck /data/project/xiangzhai/dragonegg/test/validator/c/ThreadLocalVariables.c; }

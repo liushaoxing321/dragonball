@@ -1,0 +1,1 @@
+set -o pipefail;{ cc -fplugin=/data/project/xiangzhai/dragonegg/dragonegg.so -fplugin-arg-dragonegg-emit-ir /data/project/xiangzhai/dragonegg/test/validator/c++/weak-external.cpp -S -O2 -o - | FileCheck /data/project/xiangzhai/dragonegg/test/validator/c++/weak-external.cpp; }
